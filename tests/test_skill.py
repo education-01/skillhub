@@ -197,7 +197,7 @@ name: test-skill
 version: 1.0.0
 description: Test skill
 author: Test Author
-tags: [test, demo]
+tags: test, demo
 ---
 
 # Test Skill
