@@ -1,37 +1,63 @@
 ---
 name: weather
 version: 1.0.0
-description: Get weather information for any location
-author: SkillHub Team
-tags:
-  - weather
-  - api
-dependencies:
-  - requests>=2.28
-license: MIT
-homepage: https://github.com/skillhub/weather
+description: Weather query using wttr.in API with multi-city support
+author: SkillHub
+tags: weather, api, forecast
 ---
 
 # Weather Skill
 
-Get current weather and forecasts for any location.
-
-## Usage
-
-```python
-from weather import get_weather, get_forecast
-
-# Get current weather
-current = get_weather("Beijing")
-print(current)
-
-# Get forecast
-forecast = get_forecast("Shanghai", days=3)
-print(forecast)
-```
+Get current weather and forecasts for any city using the wttr.in API.
 
 ## Features
 
-- Current weather by city name
-- Multi-day forecasts
-- Supports multiple weather APIs
+- Current weather conditions
+- Multi-day forecasts (up to 3 days)
+- Multiple city queries in one request
+- Automatic location detection
+- Multiple output formats
+
+## Usage
+
+### Get Current Weather
+```python
+# Single city
+weather = get_weather("Beijing")
+
+# Multiple cities
+weather = get_weather(["Beijing", "Shanghai", "Shenzhen"])
+```
+
+### Get Forecast
+```python
+# 3-day forecast
+forecast = get_forecast("Beijing", days=3)
+```
+
+### Get Detailed Weather
+```python
+# Full weather report
+report = get_detailed_weather("Beijing")
+```
+
+## Output Format
+
+Returns weather information including:
+- Temperature (current, feels like)
+- Weather description
+- Humidity
+- Wind speed and direction
+- Visibility
+- UV index
+- Precipitation probability
+
+## Actions
+
+- `get_weather`: Get current weather for one or more cities
+- `get_forecast`: Get multi-day weather forecast
+- `get_detailed_weather`: Get detailed weather report
+
+## API
+
+Uses the free wttr.in API: https://wttr.in

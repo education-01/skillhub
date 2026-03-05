@@ -1,231 +1,245 @@
-"""Calculator skill.
-
-Perform mathematical calculations.
+#!/usr/bin/env python3
 """
-from __future__ import annotations
+Calculator Skill - Basic math operations with variable storage
+"""
 
 import math
 import re
-from typing import Union
+from typing import Dict, Any, Optional
 
-
-SKILL_INFO = {
-    "name": "calculator",
-    "version": "1.0.0",
-    "description": "Perform mathematical calculations",
-}
-
-# Allowed names in eval
-SAFE_NAMES = {
-    "abs": abs,
-    "round": round,
-    "min": min,
-    "max": max,
-    "sum": sum,
-    "pow": pow,
-    "sin": math.sin,
-    "cos": math.cos,
-    "tan": math.tan,
-    "sqrt": math.sqrt,
-    "log": math.log,
-    "log10": math.log10,
-    "exp": math.exp,
-    "pi": math.pi,
-    "e": math.e,
-    "ceil": math.ceil,
-    "floor": math.floor,
-    "factorial": math.factorial,
-}
-
-
-def calculate(expression: str) -> Union[float, int, str]:
-    """
-    Calculate a mathematical expression.
+class CalculatorSkill:
+    """Calculator with variable storage support"""
     
-    Args:
-        expression: Math expression (e.g., "2 + 2", "sqrt(16)")
+    def __init__(self):
+        self.variables: Dict[str, float] = {
+            'pi': math.pi,
+            'e': math.e,
+        }
+        self.safe_functions = {
+            'sqrt': math.sqrt,
+            'pow': pow,
+            'abs': abs,
+            'sin': math.sin,
+            'cos': math.cos,
+            'tan': math.tan,
+            'asin': math.asin,
+            'acos': math.acos,
+            'atan': math.atan,
+            'log': math.log,
+            'log10': math.log10,
+            'exp': math.exp,
+            'floor': math.floor,
+            'ceil': math.ceil,
+            'round': round,
+        }
     
-    Returns:
-        Result of calculation
-    """
-    # Clean expression
-    expr = expression.strip()
-    
-    # Basic validation
-    if not expr:
-        return "Error: Empty expression"
-    
-    # Check for dangerous patterns
-    dangerous = ["import", "exec", "eval", "__", "open", "file"]
-    for word in dangerous:
-        if word in expr.lower():
-            return f"Error: Forbidden word: {word}"
-    
-    try:
-        # Use eval with restricted globals
-        result = eval(expr, {"__builtins__": {}}, SAFE_NAMES)
+    def calculate(self, expression: str) -> Dict[str, Any]:
+        """
+        Evaluate a mathematical expression
         
-        # Round to reasonable precision
-        if isinstance(result, float):
-            if result.is_integer():
-                return int(result)
-            return round(result, 10)
-        
-        return result
-    except ZeroDivisionError:
-        return "Error: Division by zero"
-    except SyntaxError as e:
-        return f"Error: Invalid syntax - {e}"
-    except Exception as e:
-        return f"Error: {e}"
-
-
-def convert(value: float, from_unit: str, to_unit: str) -> float:
-    """
-    Convert between units.
-    
-    Args:
-        value: Value to convert
-        from_unit: Source unit
-        to_unit: Target unit
-    
-    Returns:
-        Converted value
-    """
-    # Conversion factors (to base unit)
-    length = {
-        "m": 1, "meter": 1, "meters": 1,
-        "km": 1000, "kilometer": 1000, "kilometers": 1000,
-        "cm": 0.01, "centimeter": 0.01, "centimeters": 0.01,
-        "mm": 0.001, "millimeter": 0.001, "millimeters": 0.001,
-        "in": 0.0254, "inch": 0.0254, "inches": 0.0254,
-        "ft": 0.3048, "foot": 0.3048, "feet": 0.3048,
-        "yd": 0.9144, "yard": 0.9144, "yards": 0.9144,
-        "mi": 1609.344, "mile": 1609.344, "miles": 1609.344,
-    }
-    
-    weight = {
-        "g": 1, "gram": 1, "grams": 1,
-        "kg": 1000, "kilogram": 1000, "kilograms": 1000,
-        "mg": 0.001, "milligram": 0.001, "milligrams": 0.001,
-        "lb": 453.592, "pound": 453.592, "pounds": 453.592,
-        "oz": 28.3495, "ounce": 28.3495, "ounces": 28.3495,
-    }
-    
-    temperature = {
-        "c": "celsius", "celsius": "celsius",
-        "f": "fahrenheit", "fahrenheit": "fahrenheit",
-        "k": "kelvin", "kelvin": "kelvin",
-    }
-    
-    from_unit = from_unit.lower()
-    to_unit = to_unit.lower()
-    
-    # Length conversion
-    if from_unit in length and to_unit in length:
-        base = value * length[from_unit]
-        return base / length[to_unit]
-    
-    # Weight conversion
-    if from_unit in weight and to_unit in weight:
-        base = value * weight[from_unit]
-        return base / weight[to_unit]
-    
-    # Temperature conversion (special case)
-    if from_unit in temperature and to_unit in temperature:
-        from_t = temperature[from_unit]
-        to_t = temperature[to_unit]
-        
-        # Convert to Celsius first
-        if from_t == "fahrenheit":
-            celsius = (value - 32) * 5/9
-        elif from_t == "kelvin":
-            celsius = value - 273.15
-        else:
-            celsius = value
-        
-        # Convert from Celsius to target
-        if to_t == "fahrenheit":
-            return celsius * 9/5 + 32
-        elif to_t == "kelvin":
-            return celsius + 273.15
-        else:
-            return celsius
-    
-    raise ValueError(f"Cannot convert from {from_unit} to {to_unit}")
-
-
-def execute(params: dict) -> dict:
-    """
-    Execute calculator skill.
-    
-    Args:
-        params: Dict with 'expression' or 'value', 'from', 'to' for conversion
-    
-    Returns:
-        Result dict
-    """
-    # Check for conversion
-    if "value" in params and "from" in params and "to" in params:
+        Args:
+            expression: Mathematical expression to evaluate
+            
+        Returns:
+            Dictionary with result or error
+        """
         try:
-            result = convert(
-                float(params["value"]),
-                params["from"],
-                params["to"],
-            )
+            # Sanitize expression - only allow safe characters
+            if not self._is_safe_expression(expression):
+                return {
+                    'success': False,
+                    'error': 'Invalid characters in expression'
+                }
+            
+            # Replace variable names with their values
+            safe_expr = expression
+            for var_name, var_value in sorted(self.variables.items(), key=lambda x: -len(x[0])):
+                # Use word boundary to avoid partial replacements
+                safe_expr = re.sub(r'\b' + re.escape(var_name) + r'\b', str(var_value), safe_expr)
+            
+            # Evaluate in a restricted namespace
+            namespace = {**self.safe_functions, '__builtins__': {}}
+            result = eval(safe_expr, namespace)
+            
             return {
-                "success": True,
-                "result": result,
-                "from": params["from"],
-                "to": params["to"],
+                'success': True,
+                'expression': expression,
+                'result': result
             }
         except Exception as e:
             return {
-                "success": False,
-                "error": str(e),
+                'success': False,
+                'expression': expression,
+                'error': str(e)
             }
     
-    # Regular calculation
-    expression = params.get("expression") or params.get("expr")
-    if not expression:
+    def _is_safe_expression(self, expression: str) -> bool:
+        """Check if expression contains only safe characters"""
+        # Allow numbers, operators, parentheses, function names, variables, spaces
+        allowed_pattern = r'^[\d\s\+\-\*\/\%\(\)\.\,\w]+$'
+        return bool(re.match(allowed_pattern, expression))
+    
+    def store_variable(self, name: str, value: float) -> Dict[str, Any]:
+        """
+        Store a variable value
+        
+        Args:
+            name: Variable name
+            value: Variable value
+            
+        Returns:
+            Dictionary with operation result
+        """
+        try:
+            # Validate variable name
+            if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', name):
+                return {
+                    'success': False,
+                    'error': 'Invalid variable name. Use letters, numbers, and underscores, starting with a letter or underscore.'
+                }
+            
+            self.variables[name] = float(value)
+            return {
+                'success': True,
+                'variable': name,
+                'value': value,
+                'message': f'Stored {name} = {value}'
+            }
+        except (ValueError, TypeError) as e:
+            return {
+                'success': False,
+                'error': f'Invalid value: {str(e)}'
+            }
+    
+    def get_variable(self, name: str) -> Dict[str, Any]:
+        """
+        Get a stored variable value
+        
+        Args:
+            name: Variable name
+            
+        Returns:
+            Dictionary with variable value or error
+        """
+        if name in self.variables:
+            return {
+                'success': True,
+                'variable': name,
+                'value': self.variables[name]
+            }
+        else:
+            return {
+                'success': False,
+                'error': f'Variable {name} not found'
+            }
+    
+    def list_variables(self) -> Dict[str, Any]:
+        """
+        List all stored variables
+        
+        Returns:
+            Dictionary with all variables
+        """
         return {
-            "success": False,
-            "error": "Expression is required",
+            'success': True,
+            'variables': dict(self.variables),
+            'count': len(self.variables)
         }
     
-    result = calculate(expression)
-    
-    if isinstance(result, str) and result.startswith("Error"):
-        return {
-            "success": False,
-            "error": result,
+    def clear_variables(self) -> Dict[str, Any]:
+        """
+        Clear all user-defined variables (keep constants)
+        
+        Returns:
+            Dictionary with operation result
+        """
+        # Keep constants
+        self.variables = {
+            'pi': math.pi,
+            'e': math.e,
         }
-    
-    return {
-        "success": True,
-        "expression": expression,
-        "result": result,
-    }
+        return {
+            'success': True,
+            'message': 'All user-defined variables cleared'
+        }
 
 
-if __name__ == "__main__":
-    # Demo
-    print("Calculator Demo")
-    print("=" * 40)
+# Skill interface
+_skill_instance = None
+
+def get_skill():
+    """Get or create skill instance"""
+    global _skill_instance
+    if _skill_instance is None:
+        _skill_instance = CalculatorSkill()
+    return _skill_instance
+
+
+def execute(action: str, **kwargs) -> Dict[str, Any]:
+    """
+    Execute skill action
     
-    tests = [
-        "2 + 2",
-        "10 * 5",
-        "sqrt(16)",
-        "sin(pi/2)",
-        "2 ** 10",
-        "sum([1, 2, 3, 4, 5])",
-    ]
+    Args:
+        action: Action to perform (calculate, store_variable, get_variable, list_variables, clear_variables)
+        **kwargs: Action-specific parameters
+        
+    Returns:
+        Result dictionary
+    """
+    skill = get_skill()
     
-    for expr in tests:
-        result = calculate(expr)
-        print(f"  {expr} = {result}")
+    if action == 'calculate':
+        expression = kwargs.get('expression')
+        if not expression:
+            return {'success': False, 'error': 'Missing expression parameter'}
+        return skill.calculate(expression)
     
-    print("\nConversions:")
-    print(f"  100 km to miles = {convert(100, 'km', 'mi'):.2f}")
-    print(f"  100°F to °C = {convert(100, 'f', 'c'):.1f}")
+    elif action == 'store_variable':
+        name = kwargs.get('name')
+        value = kwargs.get('value')
+        if not name or value is None:
+            return {'success': False, 'error': 'Missing name or value parameter'}
+        return skill.store_variable(name, value)
+    
+    elif action == 'get_variable':
+        name = kwargs.get('name')
+        if not name:
+            return {'success': False, 'error': 'Missing name parameter'}
+        return skill.get_variable(name)
+    
+    elif action == 'list_variables':
+        return skill.list_variables()
+    
+    elif action == 'clear_variables':
+        return skill.clear_variables()
+    
+    else:
+        return {
+            'success': False,
+            'error': f'Unknown action: {action}. Available actions: calculate, store_variable, get_variable, list_variables, clear_variables'
+        }
+
+
+if __name__ == '__main__':
+    # Test the skill
+    print("Testing Calculator Skill...")
+    
+    # Test basic calculation
+    result = execute('calculate', expression='2 + 3 * 4')
+    print(f"2 + 3 * 4 = {result}")
+    
+    # Test variable storage
+    result = execute('store_variable', name='x', value=10)
+    print(f"Store x = 10: {result}")
+    
+    # Test calculation with variable
+    result = execute('calculate', expression='x * 2 + 5')
+    print(f"x * 2 + 5 = {result}")
+    
+    # Test advanced functions
+    result = execute('calculate', expression='sqrt(16) + pow(2, 3)')
+    print(f"sqrt(16) + pow(2, 3) = {result}")
+    
+    # List variables
+    result = execute('list_variables')
+    print(f"Variables: {result}")
