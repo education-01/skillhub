@@ -1,59 +1,106 @@
 ---
 name: calculator
-version: 1.0.0
-description: Calculator with basic math operations and variable storage
-author: SkillHub
-tags: math, calculator, variables
+description: "Perform mathematical calculations and expressions. Use when: user needs to calculate numbers, percentages, or evaluate math expressions. Supports basic arithmetic, advanced functions, and variable storage."
+metadata: { "openclaw": { "emoji": "🧮" } }
 ---
 
 # Calculator Skill
 
-A powerful calculator that supports basic mathematical operations and variable storage for complex calculations.
+Perform mathematical calculations with Python expressions.
 
-## Features
+## When to Use
 
-- Basic arithmetic operations (+, -, *, /, **, %)
-- Advanced math functions (sqrt, sin, cos, tan, log, etc.)
-- Variable storage and retrieval
-- Expression evaluation
-- Support for parentheses and operator precedence
+✅ **USE this skill when:**
 
-## Usage
+- "Calculate 15% of 200"
+- "What's 2 + 3 * 4?"
+- "Compute sqrt(144)"
+- "Convert 100 USD to EUR"
+- Any math expression evaluation
+
+## When NOT to Use
+
+❌ **DON'T use this skill when:**
+
+- Complex data analysis → use pandas/numpy directly
+- Graphing/plotting → use matplotlib
+- Symbolic math → use Wolfram Alpha
+- Statistical analysis → use scipy
+
+## Commands
 
 ### Basic Calculation
-```python
-result = calculate("2 + 3 * 4")  # Returns 14
+
+```bash
+python3 -c "print(2 + 3 * 4)"
+# Output: 14
 ```
 
-### Using Variables
-```python
-# Store a variable
-store_variable("x", 10)
+### Percentage
 
-# Use in calculation
-result = calculate("x * 2 + 5")  # Returns 25
+```bash
+python3 -c "print(200 * 0.15)"
+# Output: 30.0
 ```
 
 ### Advanced Functions
-```python
-result = calculate("sqrt(16) + pow(2, 3)")  # Returns 8
-result = calculate("sin(pi/2)")  # Returns 1.0
+
+```bash
+# Square root
+python3 -c "import math; print(math.sqrt(144))"
+
+# Power
+python3 -c "print(2 ** 10)"
+
+# Trigonometry
+python3 -c "import math; print(math.sin(math.pi/2))"
+```
+
+### With Variables
+
+```bash
+python3 -c "
+x = 10
+y = 20
+print(f'Sum: {x + y}')
+print(f'Product: {x * y}')
+"
 ```
 
 ## Available Functions
 
-- `sqrt(x)` - Square root
-- `pow(x, y)` - Power
-- `abs(x)` - Absolute value
-- `sin(x)`, `cos(x)`, `tan(x)` - Trigonometric functions
-- `log(x)`, `log10(x)`, `exp(x)` - Logarithmic and exponential
-- `floor(x)`, `ceil(x)`, `round(x)` - Rounding functions
-- `pi`, `e` - Mathematical constants
+- `abs(x)` — Absolute value
+- `round(x, n)` — Round to n decimals
+- `pow(x, y)` — x to the power of y
+- `min(a, b, ...)` — Minimum value
+- `max(a, b, ...)` — Maximum value
+- `sum([...])` — Sum of values
 
-## Actions
+### Math Module
 
-- `calculate`: Evaluate a mathematical expression
-- `store_variable`: Store a value in a variable
-- `get_variable`: Retrieve a stored variable
-- `list_variables`: List all stored variables
-- `clear_variables`: Clear all stored variables
+```bash
+python3 -c "import math; print(dir(math))"
+```
+
+- `math.sqrt(x)` — Square root
+- `math.sin/cos/tan(x)` — Trigonometry
+- `math.log(x), math.log10(x)` — Logarithms
+- `math.floor(x), math.ceil(x)` — Rounding
+- `math.pi, math.e` — Constants
+
+## Quick Responses
+
+**"Calculate 15% of 200"**
+```bash
+python3 -c "print(f'15% of 200 = {200 * 0.15}')"
+```
+
+**"What's 2^10?"**
+```bash
+python3 -c "print(f'2^10 = {2 ** 10}')"
+```
+
+**"Square root of 144"**
+```bash
+python3 -c "import math; print(f'√144 = {math.sqrt(144)}')"
+```

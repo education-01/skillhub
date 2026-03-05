@@ -1,63 +1,112 @@
 ---
 name: weather
-version: 1.0.0
-description: Weather query using wttr.in API with multi-city support
-author: SkillHub
-tags: weather, api, forecast
+description: "Get current weather and forecasts via wttr.in or Open-Meteo. Use when: user asks about weather, temperature, or forecasts for any location. NOT for: historical weather data, severe weather alerts, or detailed meteorological analysis. No API key needed."
+homepage: https://wttr.in/:help
+metadata: { "openclaw": { "emoji": "🌤️", "requires": { "bins": ["curl"] } } }
 ---
 
 # Weather Skill
 
-Get current weather and forecasts for any city using the wttr.in API.
+Get current weather conditions and forecasts.
 
-## Features
+## When to Use
 
-- Current weather conditions
-- Multi-day forecasts (up to 3 days)
-- Multiple city queries in one request
-- Automatic location detection
-- Multiple output formats
+✅ **USE this skill when:**
 
-## Usage
+- "What's the weather?"
+- "Will it rain today/tomorrow?"
+- "Temperature in [city]"
+- "Weather forecast for the week"
+- Travel planning weather checks
 
-### Get Current Weather
-```python
-# Single city
-weather = get_weather("Beijing")
+## When NOT to Use
 
-# Multiple cities
-weather = get_weather(["Beijing", "Shanghai", "Shenzhen"])
+❌ **DON'T use this skill when:**
+
+- Historical weather data → use weather archives/APIs
+- Climate analysis or trends → use specialized data sources
+- Hyper-local microclimate data → use local sensors
+- Severe weather alerts → check official NWS sources
+- Aviation/marine weather → use specialized services (METAR, etc.)
+
+## Location
+
+Always include a city, region, or airport code in weather queries.
+
+## Commands
+
+### Current Weather
+
+```bash
+# One-line summary
+curl "wttr.in/London?format=3"
+
+# Detailed current conditions
+curl "wttr.in/London?0"
+
+# Specific city
+curl "wttr.in/New+York?format=3"
 ```
 
-### Get Forecast
-```python
+### Forecasts
+
+```bash
 # 3-day forecast
-forecast = get_forecast("Beijing", days=3)
+curl "wttr.in/London"
+
+# Week forecast
+curl "wttr.in/London?format=v2"
+
+# Specific day (0=today, 1=tomorrow, 2=day after)
+curl "wttr.in/London?1"
 ```
 
-### Get Detailed Weather
-```python
-# Full weather report
-report = get_detailed_weather("Beijing")
+### Format Options
+
+```bash
+# One-liner
+curl "wttr.in/London?format=%l:+%c+%t+%w"
+
+# JSON output
+curl "wttr.in/London?format=j1"
+
+# PNG image
+curl "wttr.in/London.png"
 ```
 
-## Output Format
+### Format Codes
 
-Returns weather information including:
-- Temperature (current, feels like)
-- Weather description
-- Humidity
-- Wind speed and direction
-- Visibility
-- UV index
-- Precipitation probability
+- `%c` — Weather condition emoji
+- `%t` — Temperature
+- `%f` — "Feels like"
+- `%w` — Wind
+- `%h` — Humidity
+- `%p` — Precipitation
+- `%l` — Location
 
-## Actions
+## Quick Responses
 
-- `get_weather`: Get current weather for one or more cities
-- `get_forecast`: Get multi-day weather forecast
-- `get_detailed_weather`: Get detailed weather report
+**"What's the weather?"**
 
-## API
+```bash
+curl -s "wttr.in/London?format=%l:+%c+%t+(feels+like+%f),+%w+wind,+%h+humidity"
+```
 
-Uses the free wttr.in API: https://wttr.in
+**"Will it rain?"**
+
+```bash
+curl -s "wttr.in/London?format=%l:+%c+%p"
+```
+
+**"Weekend forecast"**
+
+```bash
+curl "wttr.in/London?format=v2"
+```
+
+## Notes
+
+- No API key needed (uses wttr.in)
+- Rate limited; don't spam requests
+- Works for most global cities
+- Supports airport codes: `curl wttr.in/ORD`

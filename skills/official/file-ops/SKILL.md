@@ -1,59 +1,150 @@
 ---
 name: file-ops
-version: 1.0.0
-description: File operations - read, write, and directory listing
-author: SkillHub
-tags: file, io, directory, operations
+description: "File operations: read, write, list, delete files and directories. Use when: user needs to manage files, read content, or organize directories. Handle with care - file operations can be destructive."
+metadata: { "openclaw": { "emoji": "📁" } }
 ---
 
 # File Operations Skill
 
-Perform file system operations including reading, writing, and directory listing.
+Read, write, list, and manage files and directories.
 
-## Features
+## When to Use
 
-- Read file contents
-- Write to files (create/overwrite)
-- Append to files
-- List directory contents
-- Create directories
-- Check file/directory existence
-- Get file information
+✅ **USE this skill when:**
 
-## Usage
+- "Read the file..."
+- "Create a file..."
+- "List files in..."
+- "Delete..."
+- "Copy/move..."
+- File management tasks
+
+## When NOT to Use
+
+❌ **DON'T use this skill when:**
+
+- Editing code → use code editor
+- Binary file operations → use specialized tools
+- Large file processing → use streaming
+- System files → be very careful!
+
+## Commands
 
 ### Read File
-```python
-content = read_file("/path/to/file.txt")
+
+```bash
+# Read entire file
+cat /path/to/file.txt
+
+# Read with line numbers
+cat -n /path/to/file.txt
+
+# Read first/last lines
+head -20 /path/to/file.txt
+tail -20 /path/to/file.txt
 ```
 
 ### Write File
-```python
-result = write_file("/path/to/file.txt", "Hello, World!")
+
+```bash
+# Write content
+echo "Hello World" > /path/to/file.txt
+
+# Append content
+echo "More text" >> /path/to/file.txt
+
+# Write multiple lines
+cat > /path/to/file.txt << 'EOF'
+Line 1
+Line 2
+Line 3
+EOF
 ```
 
 ### List Directory
-```python
-files = list_directory("/path/to/directory")
+
+```bash
+# List files
+ls -la /path/to/directory
+
+# List recursively
+find /path/to/directory -type f
+
+# List by extension
+ls *.py
 ```
 
-### Create Directory
-```python
-result = create_directory("/path/to/new/directory")
+### Copy/Move
+
+```bash
+# Copy file
+cp /source/file.txt /dest/file.txt
+
+# Copy directory
+cp -r /source/dir /dest/dir
+
+# Move/rename
+mv /old/path /new/path
 ```
 
-## Actions
+### Delete
 
-- `read_file`: Read file contents
-- `write_file`: Write content to file (creates or overwrites)
-- `append_file`: Append content to file
-- `list_directory`: List directory contents
-- `create_directory`: Create a new directory
-- `file_exists`: Check if file exists
-- `get_file_info`: Get file metadata
+```bash
+# Delete file
+rm /path/to/file.txt
 
-## Safety
+# Delete directory
+rm -rf /path/to/directory
 
-- Validates paths to prevent directory traversal
-- Respects file permissions
-- Safe character encoding handling
+# ⚠️ BE CAREFUL with rm -rf!
+```
+
+### Check File Info
+
+```bash
+# File exists?
+test -f /path/to/file && echo "exists" || echo "not found"
+
+# Directory exists?
+test -d /path/to/dir && echo "exists" || echo "not found"
+
+# File size
+du -h /path/to/file
+
+# File permissions
+stat /path/to/file
+```
+
+## Quick Responses
+
+**"Read the config file"**
+
+```bash
+cat ~/.config/app/config.yaml
+```
+
+**"List all Python files"**
+
+```bash
+find . -name "*.py" -type f
+```
+
+**"Create a new file with content"**
+
+```bash
+cat > /path/to/newfile.txt << 'EOF'
+Your content here
+EOF
+```
+
+## Safety Notes
+
+⚠️ **Destructive Operations:**
+- `rm` - Cannot be undone
+- `mv` - Overwrites destination
+- `>` - Overwrites file content
+
+**Best Practices:**
+- Use `trash` instead of `rm` when available
+- Backup important files
+- Double-check paths before deleting
