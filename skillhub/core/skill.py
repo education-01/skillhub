@@ -77,13 +77,19 @@ class Skill:
     meta: SkillMeta
     files: List[SkillFile] = field(default_factory=list)
     readme: str = ""
-    skilL_id: Optional[str] = None
+    skill_id: Optional[str] = None
     installed_at: Optional[datetime] = None
     
     def __post_init__(self):
         if not self.skill_id:
             # Generate ID from name
             self.skill_id = re.sub(r'[^a-z0-9-]', '-', self.meta.name.lower())
+    
+    @classmethod
+    def from_dir(cls, path: Path) -> Optional["Skill"]:
+        """Load a skill from a directory."""
+        loader = SkillLoader(path.parent)
+        return loader.load(path.name)
     
     def to_dict(self) -> Dict[str, Any]:
         return {

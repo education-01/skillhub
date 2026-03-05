@@ -434,11 +434,10 @@ author: Test
             official_dir.mkdir()
             skill_dir = official_dir / "official-get"
             skill_dir.mkdir()
-            (skill_dir / "SKILL.md").write_text("""
----
+            (skill_dir / "SKILL.md").write_text("""---
 name: official-get
 version: 1.0.0
-description: Official
+description: Official skill
 author: Official
 ---
 # Official

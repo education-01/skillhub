@@ -35,9 +35,9 @@ class RemoteSkill:
     version: str
     description: str
     author: str
-    tags: List[str] = field(default_factory=list)
     source: str  # "github", "official-api", "community-api"
     source_url: str
+    tags: List[str] = field(default_factory=list)
     download_url: Optional[str] = None
     homepage: Optional[str] = None
     stars: int = 0
@@ -69,9 +69,9 @@ class RemoteSkill:
             version=data["version"],
             description=data["description"],
             author=data["author"],
-            tags=data.get("tags", []),
             source=data["source"],
             source_url=data["source_url"],
+            tags=data.get("tags", []),
             download_url=data.get("download_url"),
             homepage=data.get("homepage"),
             stars=data.get("stars", 0),
