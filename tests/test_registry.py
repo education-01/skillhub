@@ -321,11 +321,10 @@ author: Test
             skill_dir = official_dir / "multi-file-skill"
             skill_dir.mkdir()
             
-            (skill_dir / "SKILL.md").write_text("""
----
+            (skill_dir / "SKILL.md").write_text("""---
 name: multi-file-skill
 version: 1.0.0
-description: Multi file
+description: Multi file skill
 author: Test
 ---
 # Multi
@@ -366,11 +365,10 @@ class TestSkillUninstall:
             # Create skill
             skill_dir = local_dir / "removable-skill"
             skill_dir.mkdir()
-            (skill_dir / "SKILL.md").write_text("""
----
+            (skill_dir / "SKILL.md").write_text("""---
 name: removable-skill
 version: 1.0.0
-description: Removable
+description: Removable skill
 author: Test
 ---
 # Removable
@@ -408,11 +406,10 @@ class TestSkillGet:
             
             skill_dir = local_dir / "gettable-skill"
             skill_dir.mkdir()
-            (skill_dir / "SKILL.md").write_text("""
----
+            (skill_dir / "SKILL.md").write_text("""---
 name: gettable-skill
 version: 1.0.0
-description: Gettable
+description: Gettable skill
 author: Test
 ---
 # Gettable
@@ -546,11 +543,10 @@ class TestRegistryIntegration:
             official_dir.mkdir()
             skill_dir = official_dir / "cycle-test"
             skill_dir.mkdir()
-            (skill_dir / "SKILL.md").write_text("""
----
+            (skill_dir / "SKILL.md").write_text("""---
 name: cycle-test
 version: 1.0.0
-description: Cycle test
+description: Cycle test skill
 author: Test
 ---
 # Cycle Test
@@ -594,8 +590,7 @@ author: Test
             official_dir.mkdir()
             skill_dir = official_dir / "search-test"
             skill_dir.mkdir()
-            (skill_dir / "SKILL.md").write_text("""
----
+            (skill_dir / "SKILL.md").write_text("""---
 name: search-test
 version: 1.0.0
 description: Search test skill

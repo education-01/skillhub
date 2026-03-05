@@ -347,12 +347,12 @@ class LocalRegistry:
         with self._lock:
             # Try exact ID match
             if name in self._installed:
-                return self._load_skill(name)
+                return self._load_skill_from_disk(self._installed[name].install_path)
             
             # Try name match
             for skill_id, installed in self._installed.items():
                 if installed.name.lower() == name.lower():
-                    return self._load_skill(skill_id)
+                    return self._load_skill_from_disk(installed.install_path)
             
             return None
     
